@@ -28,4 +28,4 @@
 
 # Extract and separate each hole
 
-for i in `sort -u -t, -k1,1 ./Complete_Geophysics.csv | awk -F"," '{print $1}'`; do grep $i ./Complete_Geophysics.csv > $i ; done
+for i in `sort -u -t, -k1,1 ./Complete_Geophysics.csv | awk -F"," '{print $1}'`; do grep $i ./Complete_Geophysics.csv | sort --field-separator=',' -n -k 6,6 > $i ; done
