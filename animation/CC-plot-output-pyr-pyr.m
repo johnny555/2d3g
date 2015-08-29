@@ -1,4 +1,4 @@
-
+% two isosceles triangles
 function test = test_datatypes()
 
 clc; close all; clear all;
@@ -18,7 +18,7 @@ set(gcf,'Color',[1 1 1]);
 % ========== plot two signals (y1 and y2):
 disp('Let y1 and y2 to be defined as following figures:')
 disp('============================================================')
-y1 = tripuls(t,0.5,0.1);
+y1 = tripuls(t,0.5,0);
 %y2 = rectpuls(t,0.5);
 y2 = tripuls(t,0.5,0);
 subplot(4,2,1);plot(t,y1,'Color','blue','LineWidth',2),axis([-1 1 -0.2 1.2]);
@@ -40,7 +40,7 @@ disp('============================================================')
 for i = 1:iteration
     
     moveStep = (i-100)/100;
-    y1 = tripuls(t,0.5,0.1);
+    y1 = tripuls(t,0.5,0);
     y2 = tripuls(t-moveStep,0.5,0);
     
     subplot(4,2,3:4)
@@ -55,7 +55,7 @@ for i = 1:iteration
     plot(iterationSteps(1:i),crossCorrelation(1:i),'Color','black','LineWidth',2); axis([1 iteration -100 8.1e3]);
     xlabel('t')
     ylabel('CrossCorrelation(y1, y2)(t) ')
-    print(sprintf("plot-output-pyr-pyr1/%05d.jpg",i));
+    print(sprintf("plot-output-pyr-pyr/%05d.jpg",i));
     pause(0.05)
 end
 
