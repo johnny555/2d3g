@@ -127,14 +127,15 @@ def extract_seams(bore_id, seam_list = []):
 
     label = []
 
-    print len(df_data)
+    print len(df_data) # gives 408
 
     for depth in np.arange(top, bottom+bin_size, bin_size):
 
         label.append(john.get_label(bore_id = bore_id, depth = depth))
 
-    print len(label)
+    print len(label) # gives 601
     df_data['Label'] = label
+
 
     df_data.to_csv('%s_cleandata.csv'%bore_id)
 
