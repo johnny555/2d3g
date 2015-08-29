@@ -10,7 +10,7 @@ geo = pd.read_csv('Complete_Geophysics.csv')
 atv_dictionary = {}
 print('Read in lith and geo')
 
-def get_label(bore_id, depth):
+def get_label(bore_id, depth, rtype=False):
     """
     Function to get the label, will return either a string, nan or None.
     I bore_id is unknown it will raise an error.
@@ -31,10 +31,11 @@ def get_label(bore_id, depth):
     bore = lith.query('HOLEID == @bore_id and GEOLFROM < @depth and GEOLTO >= @depth')
 
     if bore.shape[0] >= 1:
-        seam = bore.iloc[0, 5]  # The lith_seam is at location 5
-
+        if rtype:
+            seam = bore.iloc[0, 4]  # Rock type
+        else:
+            seam = bore.iloc[0, 5]  # The lith_seam is at location 5
     else:
-
         seam = None
 
     return seam
@@ -247,5 +248,6 @@ def get_data(boreid, centre_point, window_size, bin_width):
     result = result.reset_index().rename(columns={'index':'DEPTH'})
 
     result['LABELS'] = result.DEPTH.apply(lambda x: get_label(boreid, x))
+    result['LABELS_ROCK_TYPE'] = result.DEPTH.apply(lambda x: get_label(boreid, x, rtype=True))
 
     return result

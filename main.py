@@ -116,16 +116,21 @@ def extract_peak_loc(hole, holeID):
 def extract_seams(bore_id, seam_list = []):
     import numpy as np
     # depth = seam_list[0][0]
-
+    print('Extracting {}'.format(bore_id))
     top = 100
     bottom = 400
     window_size = bottom-top
     mid = (top+bottom)/2.0
-    bin_size = 0.5
+    bin_size = 0.1
+    try:
+        df_data = john.get_data(boreid = bore_id, centre_point = mid, window_size = window_size, bin_width = bin_size)
+    except Exception as e:
+        print('Exception raised! {}'.format(e))
+        return
 
-    df_data = john.get_data(boreid = bore_id, centre_point = mid, window_size = window_size, bin_width = bin_size)
+    df_data.to_csv('%s_cleandata.csv'%bore_id, ignore_index=True)
 
-    df_data.to_csv('%s_cleandata.csv'%bore_id)
+    return df_data
 
 
 
@@ -148,32 +153,33 @@ if __name__ == '__main__':
     import numpy as np
     import matplotlib.pyplot as plt
 
-    # holeID = 'DD0541'
-    # holeID = 'DD0542'
-    # holeID = 'DD0551'
-    # holeID = 'DD0980A'
-    # holeID = 'DD0989'
-    # holeID = 'DD0991'
-    # holeID = 'DD0992'
-    # holeID = 'DD1000'
-    # holeID = 'DD1005'
-    # holeID = 'DD1006'
-    # holeID = 'DD1010'
-    # holeID = 'DD1012'
-    # holeID = 'DD1013'
-    # holeID = 'DD1014'
-
-    # holeID = 'DD1097'
-    # holeID = 'DD1098'
-    # holeID = 'DD1099'
-    # holeID = 'DD1100'
-    # holeID = 'DD1101'
-    # holeID = 'DD1102'
-
-    holeID = ['DD1103', 'DD1104', 'DD1105', 'DD1106', 'DD1107', 'DD1108']
+    holeId = [
+    'DD1097',
+    'DD1098',
+    'DD1099',
+    'DD1100',
+    'DD1101',
+    'DD1102',
+    'DD1103', 'DD1104', 'DD1105', 'DD1106',
+    'DD1107', 'DD1108',
+    'DD0541',
+    'DD0542',
+    'DD0551',
+    'DD0980A',
+    'DD0989',
+    'DD0991',
+    'DD0992',
+    'DD1000',
+    'DD1005',
+    'DD1006',
+    'DD1010',
+    'DD1012',
+    'DD1013',
+    'DD1014']
 
     # extract_seams(bore_id = holeID, seam_list = hole_boundaries)
-    [extract_seams(bore_id=h) for h in holeID]
+    result = pd.concat([extract_seams(bore_id=h) for h in holeId], ignore_index=True)
+    result.to_csv('all_data.csv', index=False)
 
 
 
