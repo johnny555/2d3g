@@ -1,4 +1,5 @@
 __author__ = 'Admin'
+import utils as john
 
 
 # list of holes in Complete_Geophysics.csv
@@ -47,7 +48,7 @@ def extract_peak_loc(hole, holeID):
     for i,depth in enumerate(hole['DEPTH']):
 
         if i%200 == 0:
-            print '%s progress: %i/%i'%(holeID, i, nRows)
+            print( '%s progress: %i/%i'%(holeID, i, nRows))
 
         # if depth > 80: # start looking at 80 meters
         if depth > 90: # start looking at 80 meters
@@ -112,7 +113,6 @@ def extract_peak_loc(hole, holeID):
     return seam_list
 
 
-
 def extract_seams(bore_id, seam_list = []):
     import numpy as np
     # depth = seam_list[0][0]
@@ -123,19 +123,7 @@ def extract_seams(bore_id, seam_list = []):
     mid = (top+bottom)/2.0
     bin_size = 0.5
 
-    df_data = john.get_windows(boreid = bore_id, centre_point = mid, window_size = window_size, bin_width = bin_size)
-
-    label = []
-
-    print len(df_data) # gives 408
-
-    for depth in np.arange(top, bottom+bin_size, bin_size):
-
-        label.append(john.get_label(bore_id = bore_id, depth = depth))
-
-    print len(label) # gives 601
-    df_data['Label'] = label
-
+    df_data = john.get_data(boreid = bore_id, centre_point = mid, window_size = window_size, bin_width = bin_size)
 
     df_data.to_csv('%s_cleandata.csv'%bore_id)
 
@@ -159,7 +147,6 @@ if __name__ == '__main__':
     import pandas as pd
     import numpy as np
     import matplotlib.pyplot as plt
-    import utils as john
 
     # holeID = 'DD0541'
     # holeID = 'DD0542'
@@ -191,14 +178,14 @@ if __name__ == '__main__':
 
     calvin_code = False
     if calvin_code == True:
-        print holeID
+        print (holeID)
         df_hole = extract_holes(HOLEID = holeID)
         df_hole.fillna(0)
 
         hole_boundaries = extract_peak_loc(df_hole, holeID)
 
         df_hole.plot(x = 'DEPTH', y = ['LSDU','Flag'])
-        print holeID
+        print (holeID)
         plt.title('%s'%holeID)
         plt.savefig('%s.png'%holeID)
         # plt.show()

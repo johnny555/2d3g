@@ -8,7 +8,7 @@ geo = pd.read_csv('Complete_Geophysics.csv')
 # Read in all ATV data once.
 
 atv_dictionary = {}
-
+print('Read in lith and geo')
 
 def get_label(bore_id, depth):
     """
@@ -214,23 +214,38 @@ def get_windows(boreid, centre_point, window_size, bin_width):
     bore = geo.query('HOLEID == @boreid').sort('DEPTH')
 
     if atv_dictionary.get(boreid, None) is None:
+        print('Need to read the acoustic scanner file')
         atv = pd.read_excel('Acoustic Scanner/ATV_Data_{}.xlsx'.format(boreid))
+        print('done')
         atv_dictionary[boreid] = atv
     else:
         atv = atv_dictionary[boreid]
 
     bottom = centre_point - window_size/2.
     top = centre_point + window_size/2.
+
     bore = bore.query('DEPTH > @bottom and DEPTH <= @top').sort('DEPTH')
 
     atv = atv.rename(columns={'MD': 'DEPTH'})
     atv = atv.query('DEPTH > @bottom and DEPTH <= @top').sort('DEPTH')
 
     def bin_number(depth):
-        return np.floor((depth-bottom)/bin_width)
+        return np.floor(depth/bin_width)*bin_width
 
     geo_df = bore.set_index('DEPTH')[cols].groupby(bin_number, axis=0).mean()
     atv_df = atv.set_index('DEPTH')[atv_cols].groupby(bin_number).mean()
 
-    return pd.concat([geo_df, atv_df], axis=1)
+    result = pd.concat([geo_df, atv_df], axis=1)
 
+    return result
+
+
+def get_data(boreid, centre_point, window_size, bin_width):
+
+    result = get_windows(boreid, centre_point, window_size, bin_width)
+
+    result = result.reset_index().rename(columns={'index':'DEPTH'})
+
+    result['LABELS'] = result.DEPTH.apply(lambda x: get_label(boreid, x))
+
+    return result
