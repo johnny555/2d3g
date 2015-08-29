@@ -200,6 +200,9 @@ atv_cols = ['ATV_AMP[0]',
 def get_windows(boreid, centre_point, window_size, bin_width):
     """
     Function to get data related to the windows around a point.
+    Note that the first run with a new bore id will need to load
+    the data from xls (SLOOOOW!) subsequent runs will use a cached
+    form of this data.
 
     :param bore_id: String of the bore id.
     :param centre_point: depth of the centre oint
