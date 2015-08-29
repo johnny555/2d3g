@@ -113,14 +113,32 @@ def extract_peak_loc(hole, holeID):
 
 
 
-def extract_seams(bore_id, seam_list):
+def extract_seams(bore_id, seam_list = []):
+    import numpy as np
+    # depth = seam_list[0][0]
 
-    depth = seam_list[0][0]
+    top = 100
+    bottom = 400
+    window_size = bottom-top
+    mid = (top+bottom)/2.0
+    bin_size = 0.5
+
+    df_data = john.get_windows(boreid = bore_id, centre_point = mid, window_size = window_size, bin_width = bin_size)
+
+    label = []
+
+    print len(df_data)
+
+    for depth in np.arange(top, bottom+bin_size, bin_size):
+
+        label.append(john.get_label(bore_id = bore_id, depth = depth))
+
+    print len(label)
+    df_data['Label'] = label
+
+    df_data.to_csv('%s_cleandata.csv'%bore_id)
 
 
-
-    print john.get_label(bore_id = bore_id, depth = depth)
-    print john.get_window(bore_id = bore_id, depth = depth)
 
     # ['ADEN', 'GRDE', 'DENB', 'LSDU', 'acoustic']
 
@@ -157,7 +175,7 @@ if __name__ == '__main__':
     # holeID = 'DD1013'
     # holeID = 'DD1014'
 
-    # holeID = 'DD1097'
+    holeID = 'DD1097'
     # holeID = 'DD1098'
     # holeID = 'DD1099'
     # holeID = 'DD1100'
@@ -168,24 +186,25 @@ if __name__ == '__main__':
     # holeID = 'DD1105'
     # holeID = 'DD1106'
     # holeID = 'DD1107'
-    holeID = 'DD1108'
+    # holeID = 'DD1108'
 
+    calvin_code = False
+    if calvin_code == True:
+        print holeID
+        df_hole = extract_holes(HOLEID = holeID)
+        df_hole.fillna(0)
 
+        hole_boundaries = extract_peak_loc(df_hole, holeID)
 
-    print holeID
-    df_hole = extract_holes(HOLEID = holeID)
-    df_hole.fillna(0)
+        df_hole.plot(x = 'DEPTH', y = ['LSDU','Flag'])
+        print holeID
+        plt.title('%s'%holeID)
+        plt.savefig('%s.png'%holeID)
+        # plt.show()
 
-    hole_boundaries = extract_peak_loc(df_hole, holeID)
+    # extract_seams(bore_id = holeID, seam_list = hole_boundaries)
+    extract_seams(bore_id = holeID)
 
-    df_hole.plot(x = 'DEPTH', y = ['LSDU','Flag'])
-    print holeID
-    plt.title('%s'%holeID)
-    plt.savefig('%s.png'%holeID)
-    # plt.show()
-
-
-    extract_seams(bore_id = holeID, seam_list = hole_boundaries)
 
 
 
