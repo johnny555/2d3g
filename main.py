@@ -33,24 +33,43 @@ def extract_peak_loc(hole):
 
     peak_flag = [0]*len(hole['DEPTH'])
 
+    hole_list = [] # list of holes
+
+    nRows = len(hole)
+
+    coal_seam_bound_start = False
     for i,depth in enumerate(hole['DEPTH']):
+
+        if i%200 == 0:
+            print 'progress: %i/%i'%(i, nRows)
+
         if depth > 80: # start looking at 80 meters
 
-            # print hole['DEPTH']
-            # print (hole['DEPTH'] < 1000+window_size)
-            # print (hole['DEPTH'] > 1000) & (hole['DEPTH'] < 1000+window_size)
-
-            # this is very slow, maybe faster query?
+            # get the indexes within the scan window, this is very slow, maybe faster query?
             window_idx = hole[(hole['DEPTH'] >= (depth - window_size/2.0)) & ((hole['DEPTH'] <= (depth + window_size/2.0)))].index.tolist()
 
             # print hole['LSDU'][window_idx].mean()
             if hole['LSDU'][window_idx].mean() > response_th:
                 peak_flag[i] = 10000
 
+                if coal_seam_bound_start == False:
+                    hole_prop = [depth]
+                    coal_seam_bound_start = True
+                    # print 'ich bin hier'
+
+            elif coal_seam_bound_start == True:
+                # print 'ich bin wieder hier'
+                hole_prop.append(depth) # add the end depth
+                hole_list.append(hole_prop) # add hole [start end] to hole list
+                hole_prop = [] # reset hole [start end]
+                coal_seam_bound_start = False
+
             # if  hole['LSDU'][i] > response_th:
             #     peak_flag[i] = 10000
 
     hole['Flag'] = peak_flag
+
+    return hole_list
 
 
 if __name__ == '__main__':
@@ -63,13 +82,13 @@ if __name__ == '__main__':
     # extract_holes(HOLEID = 'DD1113')
 
 
-    # df_hole = pd.read_csv('DD0509.csv')
-    df_hole = pd.read_csv('DD1113.csv')
+    df_hole = pd.read_csv('DD0509.csv')
+    # df_hole = pd.read_csv('DD1113.csv')
 
 
     print df_hole.fillna(0)
 
-    extract_peak_loc(df_hole)
+    print extract_peak_loc(df_hole)
 
     df_hole.plot(x = 'DEPTH', y = ['LSDU','Flag'])
     plt.show()
