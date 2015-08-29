@@ -233,7 +233,7 @@ def get_windows(boreid, centre_point, window_size, bin_width):
         return np.floor(depth/bin_width)*bin_width
 
     geo_df = bore.set_index('DEPTH')[cols].groupby(bin_number, axis=0).mean()
-    atv_df = atv.set_index('DEPTH')[atv_cols].groupby(bin_number).mean()
+    atv_df = atv.set_index('DEPTH').groupby(bin_number).mean()
 
     result = pd.concat([geo_df, atv_df], axis=1)
 

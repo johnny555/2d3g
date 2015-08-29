@@ -163,35 +163,17 @@ if __name__ == '__main__':
     # holeID = 'DD1013'
     # holeID = 'DD1014'
 
-    holeID = 'DD1097'
+    # holeID = 'DD1097'
     # holeID = 'DD1098'
     # holeID = 'DD1099'
     # holeID = 'DD1100'
     # holeID = 'DD1101'
     # holeID = 'DD1102'
-    # holeID = 'DD1103'
-    # holeID = 'DD1104'
-    # holeID = 'DD1105'
-    # holeID = 'DD1106'
-    # holeID = 'DD1107'
-    # holeID = 'DD1108'
 
-    calvin_code = False
-    if calvin_code == True:
-        print (holeID)
-        df_hole = extract_holes(HOLEID = holeID)
-        df_hole.fillna(0)
-
-        hole_boundaries = extract_peak_loc(df_hole, holeID)
-
-        df_hole.plot(x = 'DEPTH', y = ['LSDU','Flag'])
-        print (holeID)
-        plt.title('%s'%holeID)
-        plt.savefig('%s.png'%holeID)
-        # plt.show()
+    holeID = ['DD1103', 'DD1104', 'DD1105', 'DD1106', 'DD1107', 'DD1108']
 
     # extract_seams(bore_id = holeID, seam_list = hole_boundaries)
-    extract_seams(bore_id = holeID)
+    [extract_seams(bore_id=h) for h in holeID]
 
 
 
