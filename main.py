@@ -17,7 +17,6 @@ def extract_holes(HOLEID):
     import pandas as pd
 
     geo = pd.read_csv('Complete_Geophysics.csv')
-    extract_holes(geo, HOLEID = 'HOLEID')
 
     hole = geo.query('HOLEID == "%s"'%HOLEID)
 
@@ -60,10 +59,13 @@ if __name__ == '__main__':
     import numpy as np
     import matplotlib.pyplot as plt
 
-    # extract_holes(HOLEID = 'DD0509.csv')
+    # extract_holes(HOLEID = 'DD0509')
+    # extract_holes(HOLEID = 'DD1113')
 
 
-    df_hole = pd.read_csv('DD0509.csv')
+    # df_hole = pd.read_csv('DD0509.csv')
+    df_hole = pd.read_csv('DD1113.csv')
+
 
     print df_hole.fillna(0)
 
